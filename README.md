@@ -1,1 +1,2 @@
-# path-tracing
+# ray tracing
+
