@@ -5,6 +5,10 @@
 #ifndef RT_CORE_COMMON_H
 #define RT_CORE_COMMON_H
 
+#include <sstream>
+#include <type_traits>
+#include <vector>
+
 #define DISABLE_COPY_AND_MOVE(NAME)      \
  public:                                 \
   NAME(const NAME&) = delete;            \

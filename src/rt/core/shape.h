@@ -8,7 +8,10 @@
 #include "math.h"
 
 namespace rt::core {
-struct Bounds3f {};
+struct Bounds3f {
+  Vec3f max_pt, min_pt;
+};
+
 struct Ray;
 class Interaction;
 
