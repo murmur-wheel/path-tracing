@@ -5,9 +5,8 @@
 #ifndef RT_CORE_SHAPE_H
 #define RT_CORE_SHAPE_H
 
+#include "geometry.h"
 #include "interaction.h"
-#include "math.h"
-#include "ray.h"
 
 namespace rt::core {
 

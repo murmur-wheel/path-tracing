@@ -55,6 +55,12 @@ struct Vec2T {
     y /= rhs.y;
     return *this;
   }
+
+  bool operator==(const Vec2T<T>& rhs) const {
+    return x == rhs.x && y == rhs.y;
+  }
+
+  bool has_nan() const { return std::isnan(x) || std::isnan(y); }
 };
 
 template <typename T>
@@ -108,6 +114,10 @@ struct Vec3T {
     z /= rhs.z;
     return *this;
   }
+
+  bool has_nan() const {
+    return std::isnan(x) || std::isnan(y) || std::isnan(z);
+  }
 };
 
 template <typename T>
@@ -128,6 +138,10 @@ struct Vec4T {
   }
   Vec4T<T> operator-(const Vec4T<T>& rhs) const {
     return Vec4T<T>(x - rhs.x, y - rhs.y, z - rhs.z, w - rhs.w);
+  }
+
+  bool has_nan() const {
+    return std::isnan(x) || std::isnan(y) || std::isnan(z) || std::isnan(w);
   }
 };
 
@@ -236,16 +250,6 @@ struct Mat4T {
   static Mat4T<T> scale(const Vec3T<T>& s) { return scale(s.x, s.y, s.z); }
 };
 
-template <typename T>
-struct Bounds3T {
-  Vec3T<T> max_pt, min_pt;
-
-  bool contains(const Vec3T<T>& pt) const {
-    return (pt.x > min_pt.x) && (pt.y > min_pt.y) && (pt.z > min_pt.z) &&
-           (pt.x < max_pt.x) && (pt.y < max_pt.y) && (pt.z < max_pt.z);
-  }
-};
-
 // dot
 template <typename T>
 T dot(const Vec2T<T>& v1, const Vec2T<T>& v2) {
@@ -262,6 +266,7 @@ T dot(const Vec4T<T>& v1, const Vec4T<T>& v2) {
   return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z + v1.w * v2.w;
 }
 
+// distance squared
 template <typename T>
 T distance_squared(const Vec2T<T>& v1, const Vec2T<T>& v2) {
   auto v = v1 - v2;
@@ -280,6 +285,7 @@ T distance_squared(const Vec4T<T>& v1, const Vec4T<T>& v2) {
   return dot(v, v);
 }
 
+// distance
 template <typename T>
 T distance(const Vec2T<T>& v1, const Vec2T<T>& v2) {
   return std::sqrt(distance_squared(v1, v2));
@@ -293,6 +299,95 @@ T distance(const Vec3T<T>& v1, const Vec3T<T>& v2) {
 template <typename T>
 T distance(const Vec4T<T>& v1, const Vec4T<T>& v2) {
   return std::sqrt(distance_squared(v1, v2));
+}
+
+// max
+template <typename T>
+Vec2T<T> max(const Vec2T<T>& v1, const Vec2T<T>& v2) {
+  T x = std::max<T>(v1.x, v2.x);
+  T y = std::max<T>(v1.y, v2.y);
+  return Vec2T<T>(x, y);
+}
+
+template <typename T>
+Vec3T<T> max(const Vec3T<T>& v1, const Vec3T<T>& v2) {
+  T x = std::max<T>(v1.x, v2.x);
+  T y = std::max<T>(v1.y, v2.y);
+  T z = std::max<T>(v1.z, v2.z);
+  return Vec3T<T>(x, y, z);
+}
+
+template <typename T>
+Vec4T<T> max(const Vec4T<T>& v1, const Vec4T<T>& v2) {
+  T x = std::max<T>(v1.x, v2.x);
+  T y = std::max<T>(v1.y, v2.y);
+  T z = std::max<T>(v1.z, v2.z);
+  T w = std::max<T>(v1.w, v2.w);
+  return Vec4T<T>(x, y, z, w);
+}
+
+// min
+template <typename T>
+Vec2T<T> min(const Vec2T<T>& v1, const Vec2T<T>& v2) {
+  T x = std::min<T>(v1.x, v2.x);
+  T y = std::min<T>(v1.y, v2.y);
+  return Vec2T<T>(x, y);
+}
+
+template <typename T>
+Vec3T<T> min(const Vec3T<T>& v1, const Vec3T<T>& v2) {
+  T x = std::min<T>(v1.x, v2.x);
+  T y = std::min<T>(v1.y, v2.y);
+  T z = std::min<T>(v1.z, v2.z);
+  return Vec3T<T>(x, y, z);
+}
+
+template <typename T>
+Vec4T<T> min(const Vec4T<T>& v1, const Vec4T<T>& v2) {
+  T x = std::min<T>(v1.x, v2.x);
+  T y = std::min<T>(v1.y, v2.y);
+  T z = std::min<T>(v1.z, v2.z);
+  T w = std::min<T>(v1.w, v2.w);
+  return Vec4T<T>(x, y, z, w);
+}
+
+// clamp
+template <typename T>
+T clamp(T val, T min_val, T max_val) {
+  if (val < min_val) {
+    return min_val;
+  } else if (val > max_val) {
+    return max_val;
+  } else {
+    return val;
+  }
+}
+
+template <typename T>
+Vec2T<T> clamp(const Vec2T<T>& val, const Vec2T<T>& min_val,
+               const Vec2T<T>& max_val) {
+  T x = clamp(val.x, min_val.x, max_val.x);
+  T y = clamp(val.y, min_val.y, min_val.z);
+  return Vec2T<T>(x, y);
+}
+
+template <typename T>
+Vec3T<T> clamp(const Vec3T<T>& val, const Vec3T<T>& min_val,
+               const Vec3T<T>& max_val) {
+  T x = clamp(val.x, min_val.x, max_val.x);
+  T y = clamp(val.y, min_val.y, max_val.y);
+  T z = clamp(val.z, min_val.z, max_val.z);
+  return Vec3T<T>(x, y, z);
+}
+
+template <typename T>
+Vec4T<T> clamp(const Vec4T<T>& val, const Vec4T<T>& min_val,
+               const Vec4T<T>& max_val) {
+  T x = clamp(val.x, min_val.x, max_val.x);
+  T y = clamp(val.y, min_val.y, max_val.y);
+  T z = clamp(val.z, min_val.z, max_val.z);
+  T w = clamp(val.w, min_val.w, max_val.w);
+  return Vec4T<T>(x, y, z, w);
 }
 
 // cross
@@ -349,12 +444,6 @@ std::ostream& operator<<(std::ostream& s, const Mat4T<T>& rhs) {
   return s;
 }
 
-template <typename T>
-std::ostream& operator<<(std::ostream& s, const Bounds3T<T>& rhs) {
-  s << "[" << rhs.min_pt << "," << rhs.max_pt << "]";
-  return s;
-}
-
 using Vec2f = Vec2T<float>;
 using Vec3f = Vec3T<float>;
 using Vec4f = Vec4T<float>;
@@ -362,7 +451,6 @@ using Vec4f = Vec4T<float>;
 using Mat3f = Mat3T<float>;
 using Mat4f = Mat4T<float>;
 
-using Bounds3f = Bounds3T<float>;
 }  // namespace rt::core
 
 #endif

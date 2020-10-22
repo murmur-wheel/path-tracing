@@ -5,8 +5,8 @@
 #ifndef RT_CORE_CAMERA_H
 #define RT_CORE_CAMERA_H
 
+#include "geometry.h"
 #include "math.h"
-#include "ray.h"
 
 namespace rt::core {
 class Camera {
