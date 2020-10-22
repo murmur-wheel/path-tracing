@@ -5,6 +5,8 @@
 #ifndef RT_CORE_COMMON_H
 #define RT_CORE_COMMON_H
 
+#include <cassert>
+#include <initializer_list>
 #include <sstream>
 #include <type_traits>
 #include <vector>

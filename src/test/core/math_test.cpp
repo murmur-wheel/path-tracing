@@ -45,6 +45,13 @@ TEST(Vec4T, misc) {
   using namespace rt::core;
   Vec4T<float> v4f;
   std::cout << v4f << std::endl;
+
+  {
+    std::cout << "identity = " << Mat4T<float>::Identity() << std::endl;
+    const auto I = Mat4f::Identity();
+    Vec4f v(1, 2, 3, 4);
+    std::cout << I << " * " << v << " = " << I * v << std::endl;
+  }
 }
 
 TEST(Mat3T, misc) {

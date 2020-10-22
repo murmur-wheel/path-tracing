@@ -108,6 +108,20 @@ struct Mat3T {
   T m[3][3];
 
   Mat3T() : m{{0, 0, 0}, {0, 0, 0}, {0, 0, 0}} {}
+  explicit Mat3T(T m00, T m01, T m02, T m10, T m11, T m12, T m21, T m22, T m23)
+      : m{{m00, m01, m02}, {m10, m11, m12}, {m20, m21, m22}} {}
+
+  explicit Mat3T(const std::initializer_list<std::initializer_list<float>>& l) {
+    assert(l.size() == 3);
+
+    for (int i = 0; i < 3; ++i) {
+      assert(l.begin()[i].size() == 3);
+
+      for (int j = 0; j < 3; ++j) {
+        m[i][j] = l.begin()[i].begin()[j];
+      }
+    }
+  }
 
   Vec3T<T> operator*(const Vec3T<T>& rhs) const {
     Vec3T<T> res;
@@ -140,6 +154,39 @@ struct Mat4T {
   T m[4][4];
 
   Mat4T() : m{{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}} {}
+  explicit Mat4T(T m00, T m01, T m02, T m03, T m10, T m11, T m12, T m13, T m20,
+                 T m21, T m22, T m23, T m30, T m31, T m32, T m33)
+      : m{{m00, m01, m02, m03},
+          {m10, m11, m12, m13},
+          {m20, m21, m22, m23},
+          {m30, m31, m32, m33}} {}
+
+  explicit Mat4T(const std::initializer_list<std::initializer_list<float>>& l) {
+    assert(l.size() == 4);
+
+    for (int i = 0; i < 4; ++i) {
+      assert(l.begin()[i].size() == 4);
+
+      for (int j = 0; j < 4; ++j) {
+        m[i][j] = l.begin()[i].begin()[j];
+      }
+    }
+  }
+
+  Vec4T<T> operator*(const Vec4T<T>& rhs) const {
+    Vec4T<T> res;
+    for (int i = 0; i < 4; ++i) {
+      res[i] = 0;
+      for (int k = 0; k < 4; ++k) {
+        res[i] += m[i][k] * rhs[k];
+      }
+    }
+    return res;
+  }
+
+  static Mat4T<T> Identity() {
+    return Mat4T<T>({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}});
+  }
 
   static_assert(std::is_floating_point<T>(), "T must be floating point");
 };
