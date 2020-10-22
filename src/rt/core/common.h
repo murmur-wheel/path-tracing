@@ -19,4 +19,6 @@
   NAME& operator=(const NAME&) = delete; \
   NAME& operator=(NAME&&) = delete;
 
+using Float = float;
+
 #endif

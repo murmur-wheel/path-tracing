@@ -20,6 +20,9 @@ struct RayT {
 };
 
 template <typename T>
+class RayDifferentialT : public RayT<T> {};
+
+template <typename T>
 struct Bounds3T {
   Vec3T<T> max_pt, min_pt;
 
@@ -35,8 +38,9 @@ std::ostream& operator<<(std::ostream& s, const Bounds3T<T>& rhs) {
   return s;
 }
 
-using Ray = RayT<float>;
-using Bounds3f = Bounds3T<float>;
+using Ray = RayT<Float>;
+using RayDifferential = RayDifferentialT<Float>;
+using Bounds3f = Bounds3T<Float>;
 
 }  // namespace rt::core
 

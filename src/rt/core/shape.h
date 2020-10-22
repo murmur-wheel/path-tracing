@@ -12,6 +12,7 @@ namespace rt::core {
 
 class Shape {
  public:
+  virtual ~Shape() = default;
   virtual bool intersect(const Ray& ray, float* t_hit, Interaction* interaction,
                          bool test_alpha_texture = true) const = 0;
 
