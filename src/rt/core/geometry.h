@@ -20,6 +20,9 @@ struct Ray {
 };
 
 struct RayDifferential : public Ray {
+  explicit RayDifferential(const Ray& ray)
+      : Ray(ray), has_differentials(false) {}
+
   bool has_differentials = false;
   Vec3f rx_origin, ry_origin;
   Vec3f rx_direction, ry_direction;
