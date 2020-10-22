@@ -6,13 +6,13 @@
 #define RT_CORE_SHAPE_H
 
 #include "math.h"
+#include "ray.h"
 
 namespace rt::core {
 struct Bounds3f {
   Vec3f max_pt, min_pt;
 };
 
-struct Ray;
 class Interaction;
 
 class Shape {
@@ -26,6 +26,8 @@ class Shape {
   const Mat4f* world_to_object;
   const Mat4f* object_to_world;
   bool reverse_orientation = false;
+
+  DISABLE_COPY_AND_MOVE(Shape)
 };
 }  // namespace rt::core
 

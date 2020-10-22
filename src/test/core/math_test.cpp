@@ -9,6 +9,30 @@ TEST(Vec2T, misc) {
   using namespace rt::core;
   Vec2T<float> v2f;
   std::cout << v2f << std::endl;
+
+  {
+    Vec2f v1(1, 2);
+    Vec2f v2(3, 4);
+    std::cout << v1 << " + " << v2 << " = " << (v1 + v2) << std::endl;
+  }
+
+  {
+    Vec2f v1(3, 4);
+    Vec2f v2(2, 1);
+    std::cout << v1 << " - " << v2 << " = " << (v1 - v2) << std::endl;
+  }
+
+  {
+    Vec2f v1(2, 2);
+    Vec2f v2(3, 3);
+    std::cout << v1 << " * " << v2 << " = " << (v1 * v2) << std::endl;
+  }
+
+  {
+    Vec2f v1(2, 2);
+    Vec2f v2(3, 3);
+    std::cout << v1 << " / " << v2 << " = " << (v1 / v2) << std::endl;
+  }
 }
 
 TEST(Vec3T, misc) {

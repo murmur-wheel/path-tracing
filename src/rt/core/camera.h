@@ -11,6 +11,7 @@
 namespace rt::core {
 class Camera {
  public:
+  DISABLE_COPY_AND_MOVE(Camera)
 };
 }  // namespace rt::core
 

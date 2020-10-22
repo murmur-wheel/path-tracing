@@ -36,8 +36,26 @@ struct Vec2T {
     return *this;
   }
 
+  Vec2T<T> operator*(const Vec2T<T>& rhs) const {
+    return Vec2T<T>(x * rhs.x, y * rhs.y);
+  }
+  Vec2T<T>& operator*=(const Vec2T<T>& rhs) {
+    x *= rhs.x;
+    y *= rhs.y;
+    return *this;
+  }
+
+  Vec2T<T> operator/(const Vec2T<T>& rhs) const {
+    return Vec2T<T>(x / rhs.x, y / rhs.y);
+  }
+  Vec2T<T>& operator/=(const Vec2T<T>& rhs) {
+    x /= rhs.x;
+    y /= rhs.y;
+    return *this;
+  }
+
   static_assert(std::is_floating_point<T>(), "T must be floating point");
-};
+};  // namespace rt::core
 
 template <typename T>
 struct Vec3T {
