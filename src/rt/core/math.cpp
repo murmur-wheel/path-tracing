@@ -4,7 +4,4 @@
 
 #include "math.h"
 
-namespace rt::core {
-
-
-}  // namespace rt::core
+namespace rt::core {}  // namespace rt::core

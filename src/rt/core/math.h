@@ -10,9 +10,11 @@
 namespace rt::core {
 template <typename T>
 struct Vec2T {
+  static_assert(std::is_floating_point<T>(), "T must be floating point");
   T x, y;
 
   Vec2T() : x(0), y(0) {}
+  explicit Vec2T(T a) : x(a), y(a) {}
   explicit Vec2T(T _x, T _y) : x(_x), y(_y) {}
 
   T& operator[](int i) { return (&x)[i]; }
@@ -53,15 +55,15 @@ struct Vec2T {
     y /= rhs.y;
     return *this;
   }
-
-  static_assert(std::is_floating_point<T>(), "T must be floating point");
-};  // namespace rt::core
+};
 
 template <typename T>
 struct Vec3T {
+  static_assert(std::is_floating_point<T>(), "T must be floating point");
   T x, y, z;
 
   Vec3T() : x(0), y(0), z(0) {}
+  explicit Vec3T(T a) : x(a), y(a), z(a) {}
   explicit Vec3T(T _x, T _y, T _z) : x(_x), y(_y), z(_z) {}
 
   T& operator[](int i) { return (&x)[i]; }
@@ -87,28 +89,55 @@ struct Vec3T {
     return *this;
   }
 
-  static_assert(std::is_floating_point<T>(), "T must be floating point");
+  Vec3T<T> operator*(const Vec3T<T>& rhs) const {
+    return Vec3T<T>(x * rhs.x, y * rhs.y, z * rhs.z);
+  }
+  Vec3T<T>& operator*=(const Vec3T<T>& rhs) {
+    x *= rhs.x;
+    y *= rhs.y;
+    z *= rhs.z;
+    return *this;
+  }
+
+  Vec3T<T> operator/(const Vec3T<T>& rhs) const {
+    return Vec3T<T>(x / rhs.x, y / rhs.y, z / rhs.z);
+  }
+  Vec3T<T>& operator/=(const Vec3T<T>& rhs) {
+    x /= rhs.x;
+    y /= rhs.y;
+    z /= rhs.z;
+    return *this;
+  }
 };
 
 template <typename T>
 struct Vec4T {
+  static_assert(std::is_floating_point<T>(), "T must be floating point");
   T x, y, z, w;
 
   Vec4T() : x(0), y(0), z(0), w(0) {}
+  explicit Vec4T(T a) : x(a), y(a), z(a), w(a) {}
   explicit Vec4T(T _x, T _y, T _z, T _w) : x(_x), y(_y), z(_z), w(_w) {}
+  explicit Vec4T(const Vec3T<T>& v, T _w) : x(v.x), y(v.y), z(v.z), w(_w) {}
 
   T& operator[](int i) { return (&x)[i]; }
   const T& operator[](int i) const { return (&x)[i]; }
 
-  static_assert(std::is_floating_point<T>(), "T must be floating point");
+  Vec4T<T> operator+(const Vec4T<T>& rhs) const {
+    return Vec4T<T>(x + rhs.x, y + rhs.y, z + rhs.z, w + rhs.w);
+  }
+  Vec4T<T> operator-(const Vec4T<T>& rhs) const {
+    return Vec4T<T>(x - rhs.x, y - rhs.y, z - rhs.z, w - rhs.w);
+  }
 };
 
 template <typename T>
 struct Mat3T {
+  static_assert(std::is_floating_point<T>(), "T must be floating point");
   T m[3][3];
 
   Mat3T() : m{{0, 0, 0}, {0, 0, 0}, {0, 0, 0}} {}
-  explicit Mat3T(T m00, T m01, T m02, T m10, T m11, T m12, T m21, T m22, T m23)
+  explicit Mat3T(T m00, T m01, T m02, T m10, T m11, T m12, T m20, T m21, T m22)
       : m{{m00, m01, m02}, {m10, m11, m12}, {m20, m21, m22}} {}
 
   explicit Mat3T(const std::initializer_list<std::initializer_list<float>>& l) {
@@ -145,12 +174,11 @@ struct Mat3T {
     }
     return res;
   }
-
-  static_assert(std::is_floating_point<T>(), "T must be floating point");
 };
 
 template <typename T>
 struct Mat4T {
+  static_assert(std::is_floating_point<T>(), "T must be floating point");
   T m[4][4];
 
   Mat4T() : m{{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}} {}
@@ -184,27 +212,112 @@ struct Mat4T {
     return res;
   }
 
-  static Mat4T<T> Identity() {
+  static Mat4T<T> identity() {
     return Mat4T<T>({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}});
   }
 
-  static_assert(std::is_floating_point<T>(), "T must be floating point");
+  static Mat4T<T> translate(T offset_x, T offset_y, T offset_z) {
+    return Mat4T<T>({{1, 0, 0, offset_x},
+                     {0, 1, 0, offset_y},
+                     {0, 0, 1, offset_z},
+                     {0, 0, 0, 1}});
+  }
+
+  static Mat4T<T> translate(const Vec3T<T>& offset) {
+    return translate(offset.x, offset.y, offset.z);
+  }
+
+  static Mat4T<T> scale(T scale_x, T scale_y, T scale_z) {
+    return Mat4T<T>({{scale_x, 0, 0, 0},
+                     {0, scale_y, 0, 0},
+                     {0, 0, scale_z, 0},
+                     {0, 0, 0, 1}});
+  }
+  static Mat4T<T> scale(const Vec3T<T>& s) { return scale(s.x, s.y, s.z); }
 };
 
 template <typename T>
-std::ostream& operator<<(std::ostream& s, const Vec2T<T>& v) {
+struct Bounds3T {
+  Vec3T<T> max_pt, min_pt;
+
+  bool contains(const Vec3T<T>& pt) const {
+    return (pt.x > min_pt.x) && (pt.y > min_pt.y) && (pt.z > min_pt.z) &&
+           (pt.x < max_pt.x) && (pt.y < max_pt.y) && (pt.z < max_pt.z);
+  }
+};
+
+// dot
+template <typename T>
+T dot(const Vec2T<T>& v1, const Vec2T<T>& v2) {
+  return v1.x * v2.x + v1.y * v2.y;
+}
+
+template <typename T>
+T dot(const Vec3T<T>& v1, const Vec3T<T>& v2) {
+  return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
+}
+
+template <typename T>
+T dot(const Vec4T<T>& v1, const Vec4T<T>& v2) {
+  return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z + v1.w * v2.w;
+}
+
+template <typename T>
+T distance_squared(const Vec2T<T>& v1, const Vec2T<T>& v2) {
+  auto v = v1 - v2;
+  return dot(v, v);
+}
+
+template <typename T>
+T distance_squared(const Vec3T<T>& v1, const Vec3T<T>& v2) {
+  auto v = v1 - v2;
+  return dot(v, v);
+}
+
+template <typename T>
+T distance_squared(const Vec4T<T>& v1, const Vec4T<T>& v2) {
+  auto v = v1 - v2;
+  return dot(v, v);
+}
+
+template <typename T>
+T distance(const Vec2T<T>& v1, const Vec2T<T>& v2) {
+  return std::sqrt(distance_squared(v1, v2));
+}
+
+template <typename T>
+T distance(const Vec3T<T>& v1, const Vec3T<T>& v2) {
+  return std::sqrt(distance_squared(v1, v2));
+}
+
+template <typename T>
+T distance(const Vec4T<T>& v1, const Vec4T<T>& v2) {
+  return std::sqrt(distance_squared(v1, v2));
+}
+
+// cross
+template <typename T>
+Vec3T<T> cross(const Vec3T<T>& v1, const Vec3T<T>& v2) {
+  T x = v1.y * v2.z - v1.z * v2.y;
+  T y = v1.z * v2.x - v1.x * v2.z;
+  T z = v1.x * v2.y - v1.y * v2.x;
+  return Vec3T<T>(x, y, z);
+}
+
+template <typename T_>
+std::ostream& operator<<(std::ostream& s, const Vec2T<T_>& v) {
   s << "[" << v.x << "," << v.y << "]";
   return s;
 }
 
-template <typename T>
-std::ostream& operator<<(std::ostream& s, const Vec3T<T>& v) {
+template <typename T_>
+std::ostream& operator<<(std::ostream& s, const Vec3T<T_>& v) {
   s << "[" << v.x << "," << v.y << "," << v.z << "]";
   return s;
 }
 
-template <typename T>
-std::ostream& operator<<(std::ostream& s, const Vec4T<T>& v) {
+template <typename T_>
+std::ostream& operator<<(std::ostream& s, const Vec4T<T_>& v) {
   s << "[" << v.x << "," << v.y << "," << v.z << "," << v.w << "]";
   return s;
 }
@@ -236,12 +349,20 @@ std::ostream& operator<<(std::ostream& s, const Mat4T<T>& rhs) {
   return s;
 }
 
+template <typename T>
+std::ostream& operator<<(std::ostream& s, const Bounds3T<T>& rhs) {
+  s << "[" << rhs.min_pt << "," << rhs.max_pt << "]";
+  return s;
+}
+
 using Vec2f = Vec2T<float>;
 using Vec3f = Vec3T<float>;
 using Vec4f = Vec4T<float>;
 
 using Mat3f = Mat3T<float>;
 using Mat4f = Mat4T<float>;
+
+using Bounds3f = Bounds3T<float>;
 }  // namespace rt::core
 
 #endif

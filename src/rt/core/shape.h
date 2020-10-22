@@ -5,15 +5,11 @@
 #ifndef RT_CORE_SHAPE_H
 #define RT_CORE_SHAPE_H
 
+#include "interaction.h"
 #include "math.h"
 #include "ray.h"
 
 namespace rt::core {
-struct Bounds3f {
-  Vec3f max_pt, min_pt;
-};
-
-class Interaction;
 
 class Shape {
  public:
