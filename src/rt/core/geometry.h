@@ -6,7 +6,7 @@
 #define RT_CORE_GEOMETRY_H
 
 #include "common.h"
-#include "math.h"
+#include "linear_math.h"
 
 namespace rt::core {
 class Medium;
@@ -42,6 +42,25 @@ struct Bounds3f {
     return (pt.x > min_pt.x) && (pt.y > min_pt.y) && (pt.z > min_pt.z) &&
            (pt.x < max_pt.x) && (pt.y < max_pt.y) && (pt.z < max_pt.z);
   }
+};
+
+class Transform {
+ public:
+ private:
+  Mat4f m;
+  Mat4f m_inv;
+};
+
+class AnimatedTransform {
+ public:
+ private:
+  const Transform *start_transform, *end_transform;
+  Float start_time, end_time;
+  bool actually_animated;
+  Vec3f T[2];  // translation
+  Vec4f R[2];  // rotation
+  Mat4f S[2];  // scaling
+  bool has_rotation;
 };
 
 inline std::ostream& operator<<(std::ostream& s, const Bounds3f& rhs) {

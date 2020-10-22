@@ -2,7 +2,7 @@
 // Created by murmur-wheel on 2020/10/22.
 //
 
-#include <core/math.h>
+#include <core/linear_math.h>
 #include <gtest/gtest.h>
 
 TEST(Vec2T, misc) {

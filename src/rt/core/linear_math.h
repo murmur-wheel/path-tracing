@@ -2,8 +2,8 @@
 // Created by murmur-wheel on 2020/10/21.
 //
 
-#ifndef RT_CORE_MATH_H
-#define RT_CORE_MATH_H
+#ifndef RT_CORE_LINEAR_MATH_H
+#define RT_CORE_LINEAR_MATH_H
 
 #include "common.h"
 

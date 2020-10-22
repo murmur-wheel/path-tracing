@@ -19,8 +19,8 @@ class Shape {
   virtual Bounds3f world_bound() const = 0;
   virtual Bounds3f object_bound() const = 0;
 
-  const Mat4f* world_to_object;
-  const Mat4f* object_to_world;
+  const Transform* world_to_object;
+  const Transform* object_to_world;
   bool reverse_orientation = false;
 
   DISABLE_COPY_AND_MOVE(Shape)

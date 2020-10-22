@@ -6,7 +6,6 @@
 #define RT_CORE_CAMERA_H
 
 #include "geometry.h"
-#include "math.h"
 
 namespace rt::core {
 class Film;
@@ -27,7 +26,7 @@ class Camera {
   virtual Float generate_ray_differential(const CameraSample& sample,
                                           RayDifferential* ray) const = 0;
 
-  const Mat4f* camera_to_world;
+  const AnimatedTransform camera_to_world;
   Float shutter_open, shutter_close;
   const Medium* medium;
   const Film* film;
