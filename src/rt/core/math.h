@@ -105,6 +105,14 @@ struct Vec3T {
     return *this;
   }
 
+  Vec3T<T> operator*(T a) const { return Vec3T<T>(x * a, y * a, z * a); }
+  Vec3T<T>& operator*=(T a) {
+    x *= a;
+    y *= a;
+    z *= a;
+    return *this;
+  }
+
   Vec3T<T> operator/(const Vec3T<T>& rhs) const {
     return Vec3T<T>(x / rhs.x, y / rhs.y, z / rhs.z);
   }
@@ -136,6 +144,14 @@ struct Vec4T {
   Vec4T<T> operator+(const Vec4T<T>& rhs) const {
     return Vec4T<T>(x + rhs.x, y + rhs.y, z + rhs.z, w + rhs.w);
   }
+  Vec4T<T>& operator+=(const Vec4T<T>& rhs) {
+    x += rhs.x;
+    y += rhs.y;
+    z += rhs.z;
+    w += rhs.w;
+    return *this;
+  }
+
   Vec4T<T> operator-(const Vec4T<T>& rhs) const {
     return Vec4T<T>(x - rhs.x, y - rhs.y, z - rhs.z, w - rhs.w);
   }

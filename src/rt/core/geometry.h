@@ -10,38 +10,41 @@
 
 namespace rt::core {
 class Medium;
-template <typename T>
-struct RayT {
-  Vec3T<T> origin;
-  Vec3T<T> direction;
+
+struct Ray {
+  Vec3f origin;
+  Vec3f direction;
 
   float time;  // animating
   const Medium* medium;
 };
 
-template <typename T>
-class RayDifferentialT : public RayT<T> {};
+struct RayDifferential : public Ray {
+  bool has_differentials = false;
+  Vec3f rx_origin, ry_origin;
+  Vec3f rx_direction, ry_direction;
 
-template <typename T>
-struct Bounds3T {
-  Vec3T<T> max_pt, min_pt;
+  void scale_differentials(Float s) {
+    rx_origin = origin + (rx_origin - origin) * s;
+    ry_origin = origin + (ry_origin - origin) * s;
+    rx_direction = direction + (rx_direction - direction) * s;
+    ry_direction = direction + (ry_direction - direction) * s;
+  }
+};
 
-  bool contains(const Vec3T<T>& pt) const {
+struct Bounds3f {
+  Vec3f max_pt, min_pt;
+
+  bool contains(const Vec3f& pt) const {
     return (pt.x > min_pt.x) && (pt.y > min_pt.y) && (pt.z > min_pt.z) &&
            (pt.x < max_pt.x) && (pt.y < max_pt.y) && (pt.z < max_pt.z);
   }
 };
 
-template <typename T>
-std::ostream& operator<<(std::ostream& s, const Bounds3T<T>& rhs) {
+inline std::ostream& operator<<(std::ostream& s, const Bounds3f& rhs) {
   s << "[" << rhs.min_pt << "," << rhs.max_pt << "]";
   return s;
 }
-
-using Ray = RayT<Float>;
-using RayDifferential = RayDifferentialT<Float>;
-using Bounds3f = Bounds3T<Float>;
-
 }  // namespace rt::core
 
 #endif
