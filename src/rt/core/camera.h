@@ -6,7 +6,12 @@
 #define RT_CORE_CAMERA_H
 
 #include "math.h"
+#include "ray.h"
 
-namespace rt::core {}
+namespace rt::core {
+class Camera {
+ public:
+};
+}  // namespace rt::core
 
 #endif
