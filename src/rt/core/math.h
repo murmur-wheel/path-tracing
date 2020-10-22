@@ -444,12 +444,12 @@ std::ostream& operator<<(std::ostream& s, const Mat4T<T>& rhs) {
   return s;
 }
 
-using Vec2f = Vec2T<float>;
-using Vec3f = Vec3T<float>;
-using Vec4f = Vec4T<float>;
+using Vec2f = Vec2T<Float>;
+using Vec3f = Vec3T<Float>;
+using Vec4f = Vec4T<Float>;
 
-using Mat3f = Mat3T<float>;
-using Mat4f = Mat4T<float>;
+using Mat3f = Mat3T<Float>;
+using Mat4f = Mat4T<Float>;
 
 }  // namespace rt::core
 
