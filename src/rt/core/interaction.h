@@ -6,11 +6,14 @@
 #define RT_CORE_INTERACTION_H
 
 #include "common.h"
-#include "math.h"
+#include "linear_math.h"
+#include "medium.h"
 
 namespace rt::core {
-class MediumInterface;
 class Shape;
+class BSDF;
+class BSSRDF;
+class Primitive;
 
 class Interaction {
  public:
@@ -20,7 +23,7 @@ class Interaction {
   Vec3f normal;  // surface normal
   Vec3f wo;      // negative ray direction
 
-  MediumInterface* medium_interface = nullptr;
+  MediumInterface medium_interface;
 };
 
 class SurfaceInteraction : public Interaction {
@@ -29,6 +32,15 @@ class SurfaceInteraction : public Interaction {
   Vec3f dp_du, dp_dv;
   Vec2f dn_du, dn_dv;
   const Shape* shape = nullptr;
+  struct {
+    Vec3f normal;
+    Vec3f dp_du, dp_dv;
+    Vec3f dn_du, dn_dv;
+  } shading;
+
+  const Primitive* primitive = nullptr;
+  BSDF* bsdf = nullptr;
+  BSSRDF* bssrdf = nullptr;
 };
 }  // namespace rt::core
 

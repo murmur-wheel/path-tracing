@@ -17,6 +17,8 @@ struct Ray {
 
   float time;  // animating
   const Medium* medium;
+
+  mutable Float t_max;
 };
 
 struct RayDifferential : public Ray {

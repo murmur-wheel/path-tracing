@@ -8,6 +8,7 @@
 #include <cassert>
 #include <cmath>
 #include <initializer_list>
+#include <memory>
 #include <sstream>
 #include <type_traits>
 #include <vector>
