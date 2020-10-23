@@ -7,3 +7,4 @@
 - Primitive 用于连接 primitive, material, area light 的桥梁
 - Medium 介质
 - AreaLight 光源
+- Material 类似于 shader，计算光照反射等等

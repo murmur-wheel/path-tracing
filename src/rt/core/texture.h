@@ -5,6 +5,14 @@
 #ifndef RT_CORE_TEXTURE_H
 #define RT_CORE_TEXTURE_H
 
-namespace rt::core {}
+#include "common.h"
+
+namespace rt::core {
+template <typename T>
+class Texture {
+ public:
+ private:
+};
+}  // namespace rt::core
 
 #endif

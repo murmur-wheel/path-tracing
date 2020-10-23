@@ -7,7 +7,9 @@
 
 #include <cassert>
 #include <cmath>
+#include <cstddef>
 #include <initializer_list>
+#include <list>
 #include <memory>
 #include <sstream>
 #include <type_traits>
