@@ -3,3 +3,5 @@
 //
 
 #include "kd_tree.h"
+
+namespace rt::accelerator {}
