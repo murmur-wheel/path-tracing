@@ -19,4 +19,7 @@ TEST(bitmap, misc) {
   }
 
   save_bitmap(bitmap, "bitmap.png");
+
+  auto loaded = load_bitmap("bitmap.png");
+  save_bitmap(loaded, "saved.png");
 }

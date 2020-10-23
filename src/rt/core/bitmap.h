@@ -28,6 +28,7 @@ class Bitmap {
 };
 
 void save_bitmap(const Bitmap& bitmap, const std::string& filename);
+Bitmap load_bitmap(const std::string& filename);
 }  // namespace rt::core
 
 #endif
