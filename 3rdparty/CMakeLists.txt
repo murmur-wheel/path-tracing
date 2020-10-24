@@ -25,3 +25,16 @@ if (NOT gtest_POPULATED)
     add_subdirectory(${gtest_SOURCE_DIR} ${gtest_BINARY_DIR})
     target_link_libraries(3rdparty_stub INTERFACE gtest)
 endif ()
+
+# glog
+FetchContent_Declare(
+    glog
+    GIT_REPOSITORY https://github.com/google/glog.git
+    GIT_TAG v0.4.0
+)
+FetchContent_GetProperties(glog)
+if (NOT glog_POPULATED)
+    FetchContent_Populate(glog)
+    add_subdirectory(${glog_SOURCE_DIR} ${glog_BINARY_DIR})
+    target_link_libraries(3rdparty_stub INTERFACE glog::glog)
+endif ()
