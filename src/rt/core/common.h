@@ -5,6 +5,8 @@
 #ifndef RT_CORE_COMMON_H
 #define RT_CORE_COMMON_H
 
+#include <glog/logging.h>
+
 #include <cassert>
 #include <cmath>
 #include <cstddef>

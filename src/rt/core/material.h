@@ -8,10 +8,10 @@
 #include "common.h"
 #include "interaction.h"
 #include "material.h"
+#include "memory.h"
 #include "texture.h"
 
 namespace rt::core {
-class Arena;
 enum class TransportMode { Radiance, Importance };
 
 class Material {

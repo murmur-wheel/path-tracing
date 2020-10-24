@@ -9,4 +9,7 @@ TEST(Spectrum, misc) {
   using namespace rt::core;
   Spectrum s1(0), s2(1);
   ASSERT_TRUE((s1 + s2) == s2);
+
+  // sqrt
+  ASSERT_TRUE(sqrt<3>(s1) == s1);
 }

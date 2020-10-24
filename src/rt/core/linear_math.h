@@ -369,11 +369,11 @@ Vec4T<T> min(const Vec4T<T>& v1, const Vec4T<T>& v2) {
 
 // clamp
 template <typename T>
-T clamp(T val, T min_val, T max_val) {
-  if (val < min_val) {
-    return min_val;
-  } else if (val > max_val) {
-    return max_val;
+T clamp(T val, T low, T high) {
+  if (val < low) {
+    return low;
+  } else if (val > high) {
+    return high;
   } else {
     return val;
   }
