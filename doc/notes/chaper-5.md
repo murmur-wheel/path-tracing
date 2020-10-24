@@ -1,7 +1,7 @@
 
 ## pbrt 对所使用的几何光学模型的约定
 
-In pbrt we will assume that geometric optics is an adequate model for the description of light and light scattering. This leads to a few basic assumptions about the behavior of light that will be used implicitly throughout the system:
+In pbrt, we will assume that geometric optics is an adequate model for the description of light and light scattering. This leads to a few basic assumptions about the behavior of light that will be used implicitly throughout the system:
 
 - *Linearity:* The combined effect of two inputs to an optical system is always equal to the sum of effects of each of the inputs individually.
 - *Energy conservation:* When light scatters from a surface or from participating media, the scattering events can never produce more energy than they started with.
