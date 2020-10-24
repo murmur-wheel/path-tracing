@@ -22,7 +22,7 @@ class Arena {
     const int align = alignof(std::max_align_t);
     num_bytes = (num_bytes + align - 1) & ~(align - 1);
     if (current_block_pos_ + num_bytes > current_block_.alloc_size) {
-      if (current_block_.block) {
+      if (current_block_.alloc_ptr) {
         used_blocks_.push_back(current_block_);
         current_block_ = {};
       }
@@ -36,15 +36,15 @@ class Arena {
         }
       }
 
-      if (!current_block_.block) {
+      if (!current_block_.alloc_ptr) {
         const auto alloc_size = std::max<size_t>(num_bytes, block_size_);
-        current_block_ = alloc_aligned(alloc_size);
+        current_block_ = alloc_aligned_block(alloc_size);
       }
 
       current_block_pos_ = 0;
     }
 
-    void* ret = current_block_.aligned + current_block_pos_;
+    void* ret = current_block_.aligned_ptr + current_block_pos_;
     current_block_pos_ += num_bytes;
     return ret;
   }
@@ -56,8 +56,8 @@ class Arena {
 
  private:
   struct MemoryBlock {
-    void* block = nullptr;
-    uint8_t* aligned = nullptr;
+    void* alloc_ptr = nullptr;
+    uint8_t* aligned_ptr = nullptr;
     size_t alloc_size = 0;
   };
 
@@ -69,7 +69,7 @@ class Arena {
 
   std::list<MemoryBlock> used_blocks_, available_blocks_;
 
-  static MemoryBlock alloc_aligned(size_t alloc_size);
+  static MemoryBlock alloc_aligned_block(size_t alloc_size);
 };
 }  // namespace rt::core
 

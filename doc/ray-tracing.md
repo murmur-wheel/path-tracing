@@ -8,3 +8,5 @@
 - Medium 介质
 - AreaLight 光源
 - Material 类似于 shader，计算光照反射等等
+- Texture 并不单纯是图片，更像是一个函数。
+- Mapping2D, Mapping3D
