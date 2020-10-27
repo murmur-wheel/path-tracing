@@ -13,6 +13,7 @@
 #include <initializer_list>
 #include <list>
 #include <memory>
+#include <numeric>
 #include <sstream>
 #include <type_traits>
 #include <vector>
@@ -25,5 +26,6 @@
   NAME& operator=(NAME&&) = delete;
 
 using Float = float;
+const Float Infinity = std::numeric_limits<Float>::infinity();
 
 #endif

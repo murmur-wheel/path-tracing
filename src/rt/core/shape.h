@@ -12,6 +12,12 @@ namespace rt::core {
 
 class Shape {
  public:
+  explicit Shape(const Transform* object_to_world,
+                 const Transform* world_to_object, bool reverse_orientation)
+      : object_to_world(object_to_world),
+        world_to_object(world_to_object),
+        reverse_orientation(reverse_orientation) {}
+
   virtual ~Shape() = default;
   virtual bool intersect(const Ray& ray, float* t_hit,
                          SurfaceInteraction* interaction,

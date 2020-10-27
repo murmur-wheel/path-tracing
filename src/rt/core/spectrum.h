@@ -135,8 +135,7 @@ struct CoefficientSpectrum {
     return true;
   }
 
-  Self clamp(Float low,
-             Float high = std::numeric_limits<Float>::infinity()) const {
+  Self clamp(Float low, Float high = Infinity) const {
     Self res;
     for (int i = 0; i < SpectrumSamples; ++i) {
       res.c_[i] = ::rt::core::clamp(res.c_[i], low, high);
@@ -211,6 +210,11 @@ struct RGBSpectrum : public CoefficientSpectrum<3> {
     assert(!"no impl");
     RGBSpectrum res;
     return res;
+  }
+
+  Float luminance() const {
+    assert(!"no impl");
+    return 0;
   }
 };
 

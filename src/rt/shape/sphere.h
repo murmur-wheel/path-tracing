@@ -10,7 +10,14 @@
 namespace rt::shape {
 class Sphere : public core::Shape {
  public:
-  Sphere();
+  explicit Sphere(const core::Transform* object_to_world,
+                  const core::Transform* world_to_object,
+                  bool reverse_orientation, const core::Vec3f& center,
+                  Float radius);
+
+ private:
+  core::Vec3f center_;
+  Float radis_ = 0.0f;
 };
 }  // namespace rt::shape
 

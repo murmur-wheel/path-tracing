@@ -48,6 +48,13 @@ struct Bounds3f {
 
 class Transform {
  public:
+  Transform inverse() const {
+    Transform res;
+    res.m_inv = m;
+    res.m = m_inv;
+    return res;
+  }
+
  private:
   Mat4f m;
   Mat4f m_inv;

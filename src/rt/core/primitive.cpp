@@ -10,7 +10,7 @@ Bounds3f GeometricPrimitive::world_bound() const {
   return shape_->world_bound();
 }
 
-bool GeometricPrimitive::Intersect(const Ray& r,
+bool GeometricPrimitive::intersect(const Ray& r,
                                    SurfaceInteraction* interaction) const {
   Float t_hit;
   if (!shape_->intersect(r, &t_hit, interaction)) return false;

@@ -19,7 +19,7 @@ class Primitive {
  public:
   virtual ~Primitive() = default;
   virtual Bounds3f world_bound() const = 0;
-  virtual bool Intersect(const Ray& r,
+  virtual bool intersect(const Ray& r,
                          SurfaceInteraction* interaction) const = 0;
   virtual bool intersect_p(const Ray& r) const = 0;
   virtual const AreaLight* get_area_light() const = 0;
@@ -32,7 +32,7 @@ class Primitive {
 class GeometricPrimitive : public Primitive {
  public:
   Bounds3f world_bound() const final;
-  bool Intersect(const Ray& r, SurfaceInteraction* interaction) const final;
+  bool intersect(const Ray& r, SurfaceInteraction* interaction) const final;
   bool intersect_p(const Ray& r) const final;
   const AreaLight* get_area_light() const final;
   const Material* get_material() const final;
