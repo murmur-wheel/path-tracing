@@ -1,6 +1,3 @@
 # ray tracing
 
-离线渲染器，包括
-
-1. 一个渲染器
-2. 阅读笔记
+文档见 wiki: [ray-tracing wiki](https://github.com/murmur-wheel/ray-tracing.wiki.git)
