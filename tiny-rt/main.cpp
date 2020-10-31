@@ -1,10 +1,12 @@
-#include <cmath>
-#include <cstdlib>
-#include <string>
-#include <vector>
-
+#include <glog/logging.h>
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb_image_write.h>
+
+#include <cmath>
+#include <cstdlib>
+#include <memory>
+#include <string>
+#include <vector>
 
 using Float = float;
 
@@ -49,6 +51,10 @@ struct Vec3 {
   Vec3 operator/(const Vec3& rhs) const {
     return Vec3(x / rhs.x, y * rhs.y, z * rhs.z);
   }
+  Vec3 operator/(Float rhs) const {
+    Float inv = 1 / rhs;
+    return Vec3(x * inv, y * inv, z * inv);
+  }
   Vec3& operator/=(const Vec3& rhs) {
     x /= rhs.x;
     y /= rhs.y;
@@ -76,8 +82,8 @@ Vec3 sqrt(const Vec3& v) {
 }
 
 Vec3 normalize(const Vec3& v) {
-  Float l = std::sqrt(dot(v, v));
-  Float inv = 1.0 / l;
+  Float len = std::sqrt(dot(v, v));
+  Float inv = 1.0 / len;
   return v * inv;
 }
 
@@ -152,16 +158,70 @@ class Sphere {
 
 struct Scene {
   std::vector<Sphere*> spheres;
+
+  Vec3 trace();
 };
 
-struct PerspectiveCamera {
-  Vec3 center;
-  Vec3 up_dir;
-  Vec3 to_dir;
-  Float fov_angle = 0;
-  Float aspect = 0;
+class PerspectiveCamera {
+ public:
+  class Generator {
+   public:
+    Generator() = default;
+    Generator(const PerspectiveCamera* camera, int width, int height)
+        : camera_(camera) {
+      Vec3 unit_horizontal = cross(camera_->to_dir_, camera_->up_dir_);
+      Vec3 unit_vertical = cross(camera->to_dir_, unit_horizontal);
 
-  void generate_ray(float film_u, float film_v, Ray* ray) const {}
+      Float aspect = Float(width) / Float(height);
+      Vec3 center = camera_->center_ + normalize(camera_->to_dir_);
+      Float half_height = std::tan(camera_->fov_angle_ / 2);
+      Float half_width = half_height * aspect;
+
+      top_left_corner_ =
+          center - unit_vertical * half_height - unit_horizontal * half_width;
+      vertical_ = unit_vertical * half_height * 2 / Float(height);
+      horizontal_ = unit_horizontal * half_width * 2 / Float(width);
+    }
+
+    Ray generate(Float x, Float y) {
+      Vec3 p = top_left_corner_ + horizontal_ * x + vertical_ * y;
+      Ray ray;
+      ray.origin = camera_->center_;
+      ray.direction = normalize(p - ray.origin);
+      return ray;
+    }
+
+    void print_debug_string() {
+      printf("top left corner: [%f, %f, %f]\n", top_left_corner_.x,
+             top_left_corner_.y, top_left_corner_.z);
+      printf("vertical: [%f, %f, %f]\n", vertical_.x, vertical_.y, vertical_.z);
+      printf("horizontal: [%f, %f, %f]\n", horizontal_.x, horizontal_.y,
+             horizontal_.z);
+    }
+
+   private:
+    const PerspectiveCamera* camera_ = nullptr;
+    Vec3 top_left_corner_;
+    Vec3 vertical_;
+    Vec3 horizontal_;
+  };
+
+  PerspectiveCamera(const Vec3& center, const Vec3& up_dir, const Vec3& to_dir,
+                    Float fov_angle)
+      : center_(center),
+        up_dir_(up_dir),
+        to_dir_(to_dir),
+        fov_angle_(fov_angle) {}
+
+  void make_generator(int width, int height, Generator* generator) const {
+    *generator = Generator(this, width, height);
+  }
+
+ private:
+  Vec3 center_;
+  Vec3 up_dir_;
+  Vec3 to_dir_;
+  Float fov_angle_ = 0;
 };
 
 void setup_camera(PerspectiveCamera* camera) {}
@@ -170,13 +230,23 @@ void render(const PerspectiveCamera* camera, const Scene* scene, int width,
             int height, const std::string& output) {
   uint8_t* buf = new uint8_t[640 * 480 * 3];
 
+  PerspectiveCamera::Generator ray_generator;
+  camera->make_generator(width, height, &ray_generator);
+  ray_generator.print_debug_string();
+
   for (int x = 0; x < width; ++x) {
     for (int y = 0; y < height; ++y) {
       Vec3 color;
-      int grid_x = x / 32, grid_y = y / 32;
-      if ((grid_x + grid_y) % 2) {
-        color = Vec3(1);
+      Float film_x = Float(x) + 0.5, film_y = Float(y) + 0.5;
+
+      Ray ray = ray_generator.generate(film_x, film_y);
+      Sphere sphere(Vec3(0, 0, -2), 0.5, nullptr);
+      Float t_hit;
+      HitInfo hit_info;
+      if (sphere.intersects(ray, &t_hit, &hit_info)) {
+        color = (hit_info.normal + Vec3(1)) * 0.5;
       }
+
       store(color, buf + (x + y * width) * 3);
     }
   }
@@ -186,9 +256,8 @@ void render(const PerspectiveCamera* camera, const Scene* scene, int width,
 }
 
 int main(int argc, char* argv[]) {
-  PerspectiveCamera camera;
-  setup_camera(&camera);
+  PerspectiveCamera camera(Vec3(0), Vec3(0, 1, 0), Vec3(0, 0, -1), 3.14f / 4);
   Scene scene;
   setup_scene(&scene);
-  render(&camera, &scene, 640, 480, "color.png");
+  render(&camera, &scene, 480, 480, "color.png");
 }
